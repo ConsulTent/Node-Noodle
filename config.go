@@ -1,6 +1,10 @@
 package main
 
-// JsonCoinConfig contains coin specific json
+/*
+   JsonCoinConfig contains coin specific json
+   This is where you'd want to add new coins.
+*/
+
 var JsonCoinConfig string = `
 { "coins": [
         {
@@ -31,8 +35,18 @@ var JsonCoinConfig string = `
           "./%b getblockcount",
           "./%b getblockhash %0",
           "./%b getblock %0" ],
-        "blocktime":300
-      }
+        "blocktime":60
+      },
+      {
+       "name": "Dash",
+       "tag":"DASH",
+       "binary":"dash-cli",
+       "cmdchain": [
+         "./%b getblockcount",
+         "./%b getblockhash %0",
+         "./%b getblockheader %0" ],
+       "blocktime":160
+     }
     ]
  }
 `
