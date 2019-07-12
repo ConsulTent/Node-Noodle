@@ -18,6 +18,7 @@ type GenericCoin struct {
 	Binary      string   `json:"binary"`
 	CmdChain    []string `json:"cmdchain"`
 	BlockTime   int64    `json:"blocktime"`
+	Time        int64
 	Blocks      int64
 	CaptureTime int64
 	Detected    bool
@@ -54,6 +55,7 @@ func DetectCoin() bool {
 			Coin.Binary = cn.String()
 			Coin.Name = gjson.Get(fmt.Sprintf("%s", data), "name").String()
 			Coin.Tag = gjson.Get(fmt.Sprintf("%s", data), "tag").String()
+			Coin.BlockTime = int64(gjson.Get(fmt.Sprintf("%s", data), "blocktime").Int())
 			coinarray := gjson.Get(fmt.Sprintf("%s", data), "cmdchain").Array()
 			log.Debug(fmt.Sprintf("\ncoinarray: %+v\n", coinarray))
 			detected = true
@@ -102,7 +104,7 @@ func InitCoin() {
 	log.Debug(fmt.Sprintf("json: block time %s", blocktime))
 
 	Coin.Blocks = blocks.Int()
-	Coin.BlockTime = blocktime.Int()
+	Coin.Time = blocktime.Int()
 	Coin.CaptureTime = time.Now().Unix()
 
 }

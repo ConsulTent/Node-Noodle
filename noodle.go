@@ -27,7 +27,7 @@ type cmdline struct {
 	Coins     bool   `init:"c" help:"List supported coins and exit."`
 	CoinStart string `init:"s" help:"[optional]: Coin start command.  If not specified, alert only."`
 	CoinStop  string `init:"t" help:"[optional]: Coin stop command.  If not specified, alert only."`
-	TimeDiff  int    `init:"T" help:"[optional]: Block time or time differential.  Default is 300 seconds (5 minutes)."`
+	TimeDiff  int    `init:"T" help:"[optional]: Block time or time differential.  Default is coin's configured block time (varies)."`
 	Failures  int    `init:"f" help:"Number of consecutive failures before we care. [default: 5]"`
 	Pid       string `init:"p" help:"[optional]: Specify a pid to write to."`
 	Offset    int    `init:"o" help:"Time multiplier offset for alert. [default: 3]"`
@@ -102,12 +102,6 @@ func main() {
 		log.Exit(0)
 	}
 
-	if cmds.TimeDiff > 0 {
-		timediff = int64(cmds.TimeDiff)
-	} else {
-		timediff = 300
-	}
-
 	if cmds.Failures > 0 {
 		alert_failures = cmds.Failures
 	} else {
@@ -134,6 +128,7 @@ func main() {
 	} else {
 		log.Info(fmt.Sprintf("Detected: %s\n", Coin.Name))
 	}
+
 	// Loop and background here
 
 	for { // Loop
@@ -159,6 +154,13 @@ func main() {
 			log.Warn(fmt.Sprintf("Drifting off to sleep for %s, in the hopes server recovers.", time.Duration(cmds.TimeDiff)*time.Second))
 			time.Sleep(time.Duration(cmds.TimeDiff) * time.Second)
 			break
+		} else {
+			if cmds.TimeDiff > 0 {
+				timediff = int64(cmds.TimeDiff)
+			} else {
+				timediff = Coin.BlockTime
+			}
+			log.Debug(fmt.Sprintf("timediff: %d\n", timediff))
 		}
 
 		log.Debug("Entering Sqlite3")
@@ -281,14 +283,14 @@ func SaveToSqlite(coin string, debug ...bool) bool {
 		rows.Scan(&id, &coin, &blocks, &blocktime, &capturetime)
 		//		fmt.Println(strconv.Itoa(id) + ": " + coin + " " + strconv.FormatInt(blocks,10) + " " + strconv.FormatInt(blocktime,10) + " " + strconv.FormatInt(capturetime,10))
 	}
-	if blocktime == Coin.BlockTime {
+	if blocktime == Coin.Time {
 		log.Debug("Blocktimes are equal, skipping insert.")
 	} else {
 		statement, _ = database.Prepare("INSERT INTO blocks (Coin, Blocks, BlockTime, CaptureTime) VALUES (?, ?, ?, ?)")
 		log.Debug("Insert prepared")
 		log.Debug("executing Sqlite3 statement")
-		log.Debug(fmt.Sprintf("INSERT DATA: %s %d %d %d", Coin.Tag, Coin.Blocks, Coin.BlockTime, Coin.CaptureTime))
-		statement.Exec(Coin.Tag, Coin.Blocks, Coin.BlockTime, Coin.CaptureTime)
+		log.Debug(fmt.Sprintf("INSERT DATA: %s %d %d %d", Coin.Tag, Coin.Blocks, Coin.Time, Coin.CaptureTime))
+		statement.Exec(Coin.Tag, Coin.Blocks, Coin.Time, Coin.CaptureTime)
 		log.Debug("Sqlite3 Inserted Data")
 	}
 	//database.Close()
