@@ -46,6 +46,16 @@ var JsonCoinConfig string = `
          "./%b getblockhash %0",
          "./%b getblockheader %0" ],
        "blocktime":160
+     },
+     {
+       "name": "PIVX",
+       "tag":"PIVX",
+       "binary":"pivx-cli",
+       "cmdchain": [
+         "./%b getblockcount",
+         "./%b getblockhash %0",
+         "./%b getblockheader %0" ],
+       "blocktime":60
      }
     ]
  }
