@@ -1,0 +1,6 @@
+language: go
+install: true
+go:
+- tip
+
+gobuild_args: -i -v -ldflags="-X main.gitver=00000-travisCI"
