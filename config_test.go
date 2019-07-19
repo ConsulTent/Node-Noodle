@@ -7,14 +7,11 @@ import (
 
 func TestConfig(t *testing.T) {
 
-    if isJSON(JsonCoinConfig) == false {
-      t.Fail()
-    }
-}
+  if func (s string) bool {
+      var js map[string]interface{}
 
-
-func isJSON(s string) bool {
-    var js map[string]interface{}
-    return json.Unmarshal([]byte(s), &js) == nil
-
+      return json.Unmarshal([]byte(s), &js) == nil
+  }(JsonCoinConfig) == false {
+    t.Fail()
+  }
 }
