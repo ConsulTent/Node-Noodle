@@ -188,6 +188,10 @@ func main() {
 		bb := BlocksBehind()
 		if bb > 10 {
 			log.Warn(fmt.Sprintf("We are %d blocks behind network!",bb))
+		} else {
+			if cmds.Verbose == true {
+				log.Info(fmt.Sprintf("We are %d blocks behind network.",bb))
+			}
 		}
 	}
 // *** Insight ***
