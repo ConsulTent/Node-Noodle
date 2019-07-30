@@ -30,6 +30,7 @@ type cmdline struct {
 	TimeDiff  int    `init:"T" help:"[optional]: Block time or time differential.  Default is coin's configured block time (varies)."`
 	Failures  int    `init:"f" help:"Number of consecutive failures before we care. [default: 5]"`
 	Pid       string `init:"p" help:"[optional]: Specify a pid to write to."`
+	Net				bool	 `init:"n" help:"Do not query any external resource.  Rely only on local data."`
 	Offset    int    `init:"o" help:"Time multiplier offset for alert. [default: 3]"`
 	Verbose   bool   `init:"v" help:"Verbose mode.  Report Average and Max drift warnings."`
 	Daemon    bool   `init:"D" help:"Run with daemon compatibility."`
@@ -37,7 +38,7 @@ type cmdline struct {
 	Version   bool   `init:"V" help:"Version info."`
 }
 
-const pver = "0.0.2"
+const pver = "0.0.3"
 
 var gitver = "undefined"
 
@@ -181,6 +182,15 @@ func main() {
 			}
 
 		}
+
+// *** Insight ***
+	if cmds.Net != false {
+		bb := BlocksBehind()
+		if bb > 10 {
+			log.Warn(fmt.Sprintf("We are %d blocks behind network!",bb))
+		}
+	}
+// *** Insight ***
 
 		if lastdrift > timediff {
 			log.Warn(fmt.Sprintf("%s Lastdrift was over %s by %s", strings.ToUpper(Coin.Tag), time.Duration(timediff)*time.Second, time.Duration(lastdrift)*time.Second-time.Duration(timediff)*time.Second))
@@ -496,7 +506,7 @@ func smtpSendMail(e string, msg string) bool {
 
 	<body>
 	<p>
-	    Hello {{.Name}} from {{.HOST}},
+	    Hello {{.Name}}, from host {{.HOST}},
 	    <B>{{.ALERT}}</B>
 			<p>This message brought to you by <a href="http://consultent.ltd/">Node Noodle</a>.
 	</p>

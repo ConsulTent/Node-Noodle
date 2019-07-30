@@ -15,7 +15,11 @@ var JsonCoinConfig string = `
            "./%b getblockcount",
            "./%b getblockhash %0",
            "./%b getblockheader %0" ],
-         "blocktime":300
+         "blocktime":300,
+         "insight": {
+           "baseurl":"https://explorer.zcoin.io/api/%0",
+           "status":"/status"
+         }
         },
         {
          "name": "BitCloud",
@@ -25,7 +29,11 @@ var JsonCoinConfig string = `
            "./%b getblockcount",
            "./%b getblockhash %0",
            "./%b getblockheader %0" ],
-         "blocktime":300
+         "blocktime":300,
+         "insight": {
+           "baseurl":"https://chainz.cryptoid.info/btdx/api.dws?q=%0",
+           "status":"getblockcount"
+         }
        },
        {
         "name": "EliteCoin",
@@ -35,7 +43,11 @@ var JsonCoinConfig string = `
           "./%b getblockcount",
           "./%b getblockhash %0",
           "./%b getblock %0" ],
-        "blocktime":60
+        "blocktime":60,
+        "insight": {
+          "baseurl":"https://chainz.cryptoid.info/1337/api.dws?q=%0",
+          "status":"getblockcount"
+        }
       },
       {
        "name": "Dash",
@@ -45,7 +57,11 @@ var JsonCoinConfig string = `
          "./%b getblockcount",
          "./%b getblockhash %0",
          "./%b getblockheader %0" ],
-       "blocktime":160
+       "blocktime":160,
+       "insight": {
+         "baseurl":"https://insight.dash.org/api/%0",
+         "status":"/status"
+       }
      },
      {
        "name": "PIVX",
@@ -55,7 +71,11 @@ var JsonCoinConfig string = `
          "./%b getblockcount",
          "./%b getblockhash %0",
          "./%b getblockheader %0" ],
-       "blocktime":60
+       "blocktime":60,
+       "insight": {
+         "baseurl":"https://chainz.cryptoid.info/pivx/api.dws?q=%0",
+         "status":"getblockcount"
+       }
      }
     ]
  }
