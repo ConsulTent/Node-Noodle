@@ -8,7 +8,7 @@ import (
 	"time"
 	"net/http"
 	"io/ioutil"
-	"bytes"
+//	"bytes"
 
 	"github.com/tidwall/gjson"
 	// "sync"
@@ -23,30 +23,46 @@ type GenericCoin struct {
 	BlockTime   int64    `json:"blocktime"`
 	Time        int64
 	Blocks      int64
+	InsightBlocks	int64
 	CaptureTime int64
 	Detected    bool
 	InsightUrl	string
 	InsightStatus	string
+	InsightFormat	string
+	InsightKey	string
 }
 
 
+
+// GetBlockInsightHeight Grab blockheight from outside url
 func GetBlockInsightHeight() string {
 	var Query string
 	var result string
 
 Query = strings.ReplaceAll(Coin.InsightUrl, "%0", Coin.InsightStatus)
 
-	resp, err := http.Get(Query)
-if err != nil {
-	result = "0"
-}
-defer resp.Body.Close()
-body, _ := ioutil.ReadAll(resp.Body)
-
-   if result != "0" {
+/*
 		 n := bytes.IndexByte(body, 0)
+		 log.Debug(fmt.Sprintf("Insight body size: %v", n))
 		 result = gjson.Get(string(body[:n]), "blockheight").String()
-	 }
+*/
+
+		   result = NetData(Query)
+//		 result = gjson.Get(NetData(Query), "info.blocks").String()
+
+		if Coin.InsightFormat == "json" {
+					 log.Debug(fmt.Sprintf("Insight json result: %s",result))
+		 result = gjson.Get(result, Coin.InsightKey).String()
+	  } else {
+			log.Debug(fmt.Sprintf("Insight text result: %s",result))
+		}
+
+		blocks , err := strconv.Atoi(result)
+		 if err != nil {
+			 log.Debug(fmt.Sprintf("GetBlockInsightHeight conversion error: %v",err))
+			 return "0"
+		 }
+		 Coin.InsightBlocks = int64(blocks)
 
 	 return result
 }
@@ -89,6 +105,12 @@ func DetectCoin() bool {
 	// Let's add Insight config
 			Coin.InsightUrl = gjson.Get(fmt.Sprintf("%s", data), "insight.baseurl").String()
 			Coin.InsightStatus = gjson.Get(fmt.Sprintf("%s", data), "insight.status").String()
+			Coin.InsightFormat = gjson.Get(fmt.Sprintf("%s", data), "insight.format").String()
+			if Coin.InsightFormat == "json" {
+				Coin.InsightKey = gjson.Get(fmt.Sprintf("%s", data), "insight.key").String()
+			} else {
+				Coin.InsightKey = ""
+			}
 	// ***
 			log.Debug(fmt.Sprintf("\ncoinarray: %+v\n", coinarray))
 			detected = true
@@ -144,7 +166,68 @@ func InitCoin() {
 
 func BlocksBehind() int64 {
 
-	blocks , _ := strconv.Atoi(GetBlockInsightHeight())
+ blocks , err := strconv.Atoi(GetBlockInsightHeight())
+  if err != nil {
+		log.Debug(fmt.Sprintf("BlocksBehind conversion error: %v",err))
+		return int64(0)
+	}
 
 	return int64(blocks) - Coin.Blocks
+}
+
+func PrintBlocksBehind(v bool) {
+
+
+		bb := BlocksBehind()
+		if bb > 15 {
+			log.Warn(fmt.Sprintf("We are %d blocks behind network!",bb))
+		} else {
+			if v == true {
+				log.Info(fmt.Sprintf("We are %d blocks behind network.",bb))
+			}
+		}
+}
+
+
+// NetData Pull insight data
+func NetData(q string) string {
+	var result string
+
+	tr := &http.Transport{
+	MaxIdleConns:       10,
+	IdleConnTimeout:    30 * time.Second,
+	DisableCompression: false,
+ }
+
+var NetClient = &http.Client{
+		Transport: tr,
+	}
+
+	log.Debug(fmt.Sprintf("NetData Query url: %s",q))
+
+	req, err := http.NewRequest("GET", q, nil)
+			 if err != nil {
+							 log.Debug(fmt.Sprintf("NetData NewRequest failed: %v",err))
+							 return ""
+			 }
+
+	req.Header.Set("User-Agent", fmt.Sprintf("Node-Noodle/%s",pver))
+
+
+	resp, err := NetClient.Do(req)
+	if err != nil {
+		log.Debug(fmt.Sprintf("Insight Query error: %v",err))
+		result = "0"
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Debug(fmt.Sprintf("Insight Read error: %v",err))
+		result = "0"
+	} else {
+			 log.Debug(fmt.Sprintf("Insight body: %s", string(body)))
+			 result = string(body)
+  }
+	return result
 }

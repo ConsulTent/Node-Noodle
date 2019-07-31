@@ -18,7 +18,9 @@ var JsonCoinConfig string = `
          "blocktime":300,
          "insight": {
            "baseurl":"https://explorer.zcoin.io/api/%0",
-           "status":"/status"
+           "status":"status",
+           "format":"json",
+           "key":"info.blocks"
          }
         },
         {
@@ -32,7 +34,8 @@ var JsonCoinConfig string = `
          "blocktime":300,
          "insight": {
            "baseurl":"https://chainz.cryptoid.info/btdx/api.dws?q=%0",
-           "status":"getblockcount"
+           "status":"getblockcount",
+           "format":"text"
          }
        },
        {
@@ -46,7 +49,8 @@ var JsonCoinConfig string = `
         "blocktime":60,
         "insight": {
           "baseurl":"https://chainz.cryptoid.info/1337/api.dws?q=%0",
-          "status":"getblockcount"
+          "status":"getblockcount",
+          "format":"text"
         }
       },
       {
@@ -60,7 +64,9 @@ var JsonCoinConfig string = `
        "blocktime":160,
        "insight": {
          "baseurl":"https://insight.dash.org/api/%0",
-         "status":"/status"
+         "status":"status",
+         "format":"json",
+         "key":"info.blocks"
        }
      },
      {
@@ -74,7 +80,8 @@ var JsonCoinConfig string = `
        "blocktime":60,
        "insight": {
          "baseurl":"https://chainz.cryptoid.info/pivx/api.dws?q=%0",
-         "status":"getblockcount"
+         "status":"getblockcount",
+         "format":"text"
        }
      }
     ]

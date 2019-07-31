@@ -63,6 +63,7 @@ func main() {
 	var avgdrift int64
 	var maxdrift int64
 	var lastblocktime int64
+	var msg string
 
 	var do_restart bool
 	var restarted bool
@@ -184,15 +185,8 @@ func main() {
 		}
 
 // *** Insight ***
-	if cmds.Net != false {
-		bb := BlocksBehind()
-		if bb > 10 {
-			log.Warn(fmt.Sprintf("We are %d blocks behind network!",bb))
-		} else {
-			if cmds.Verbose == true {
-				log.Info(fmt.Sprintf("We are %d blocks behind network.",bb))
-			}
-		}
+	if cmds.Net == false {
+	  go PrintBlocksBehind(cmds.Verbose)
 	}
 // *** Insight ***
 
@@ -204,8 +198,15 @@ func main() {
 			failures++
 			log.Debug(fmt.Sprintf("Failures: %d. We alert on %d concurrent failures.", failures, alert_failures))
 			if failures >= alert_failures {
-				msg := fmt.Sprintf("%s Last Block time is %s (%s behind %s), that's over %d x our %s timediff!", strings.ToUpper(Coin.Tag),
-					time.Unix(lastblocktime, 0).Format("Mon Jan _2 15:04:05 2006"), time.Duration(time.Now().Unix()-lastblocktime)*time.Second, time.Now().Format("Mon Jan _2 15:04:05 2006"), alert_time_offset, time.Duration(timediff)*time.Second)
+			 if cmds.Net == false {
+				msg = fmt.Sprintf("%s Last Block time is %s (%s behind %s), that's over %d x our %s timediff!\nWe are %d blocks behind the network.", strings.ToUpper(Coin.Tag),
+					time.Unix(lastblocktime, 0).Format("Mon Jan _2 15:04:05 2006"), time.Duration(time.Now().Unix()-lastblocktime)*time.Second, time.Now().Format("Mon Jan _2 15:04:05 2006"),
+					 alert_time_offset, time.Duration(timediff)*time.Second,Coin.InsightBlocks - Coin.Blocks)
+			 } else {
+				 msg = fmt.Sprintf("%s Last Block time is %s (%s behind %s), that's over %d x our %s timediff!", strings.ToUpper(Coin.Tag),
+ 					time.Unix(lastblocktime, 0).Format("Mon Jan _2 15:04:05 2006"), time.Duration(time.Now().Unix()-lastblocktime)*time.Second, time.Now().Format("Mon Jan _2 15:04:05 2006"),
+ 					 alert_time_offset, time.Duration(timediff)*time.Second)
+			 }
 				log.Error(msg)
 				// Fire off an alert! ONLY if alerts are set!
 				if len(cmds.Alerts) > 0 {
