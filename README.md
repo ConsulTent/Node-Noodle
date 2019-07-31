@@ -18,9 +18,11 @@ Donations accepted [ZCoin]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p
 Please see the [Wiki](https://github.com/ConsulTent/Node-Noodle/wiki)
 
 
+Node Noodle allows you to monitor your wallet/masternode for block drift and network block halts.
+
 ```
 ./noodle -c
-Node Noodle (c) 2019 ConsulTent Ltd. v0.0.2-bb54c62
+Node Noodle (c) 2019 ConsulTent Ltd. v0.0.3-0ab93ae
 http://consultent.ltd
 Donations accepted [ZCoin]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p
 
