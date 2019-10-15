@@ -30,7 +30,8 @@ type cmdline struct {
 	TimeDiff  int    `init:"T" help:"[optional]: Block time or time differential.  Default is coin's configured block time (varies)."`
 	Failures  int    `init:"f" help:"Number of consecutive failures before we care. [default: 5]"`
 	Pid       string `init:"p" help:"[optional]: Specify a pid to write to."`
-	Net				bool	 `init:"n" help:"Do not query any external resource.  Rely only on local data."`
+	Net				bool	 `init:"n" help:"Do not query any external resource.  Rely only on local data. [-n and -i are mutually exclusive]"`
+	Inet		  bool	 `init:"i" help:"Ignore local data for alerts, and rely only on Insight/External data. [-n and -i are mutually exclusive]"`
 	Offset    int    `init:"o" help:"Time multiplier offset for alert. [default: 3]"`
 	Verbose   bool   `init:"v" help:"Verbose mode.  Report Average and Max drift warnings."`
 	Daemon    bool   `init:"D" help:"Run with daemon compatibility."`
@@ -38,7 +39,7 @@ type cmdline struct {
 	Version   bool   `init:"V" help:"Version info."`
 }
 
-const pver = "0.0.3"
+const pver = "1.0.0"
 
 var gitver = "undefined"
 
@@ -76,6 +77,7 @@ func main() {
 		DEBUG = true
 	}
 
+//CoinStart & CoinStop
 	if len(cmds.CoinStart) > 0 || len(cmds.CoinStop) > 0 {
 		if len(cmds.CoinStart) == 0 {
 			log.Warn("You haven't specified a start command.  Assuming external startup is implemented.")
@@ -88,6 +90,12 @@ func main() {
 	} else {
 		do_restart = false
 	}
+// -- end CoinStart & CoinStop
+
+// Check for -n and -i conflicts
+ if cmds.Inet && cmds.Net {
+	 log.Fatal("-n and -i are mutually exclusive.  Please choose only one.")
+ }
 
 	//Get (and write?) Pid
 	cpid := os.Getpid()
@@ -210,8 +218,14 @@ func main() {
 				log.Error(msg)
 				// Fire off an alert! ONLY if alerts are set!
 				if len(cmds.Alerts) > 0 {
-					go smtpSendMail(cmds.Alerts, msg)
+					if cmds.Inet == true && (Coin.InsightBlocks - Coin.Blocks != 0) {
+						msg = fmt.Sprintf("%s is %d blocks behind the network.", strings.ToUpper(Coin.Tag), Coin.InsightBlocks - Coin.Blocks)
+						go smtpSendMail(cmds.Alerts, msg)
+					} else {
+					  go smtpSendMail(cmds.Alerts, msg)
+				  }
 				}
+
 				if do_restart == true {
 					alert_time = int64(time.Now().Unix())
 					restarted = RestartCoin(Coin.Tag, cmds.CoinStart, cmds.CoinStop)
