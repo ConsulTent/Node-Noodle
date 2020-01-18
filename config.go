@@ -83,6 +83,22 @@ var JsonCoinConfig string = `
          "status":"getblockcount",
          "format":"text"
        }
+     },
+     {
+      "name":"NIX",
+      "tag":"NIX",
+      "binary":"nix-cli",
+      "cmdchain": [
+        "./%b getblockcount",
+        "./%b getblockhash %0",
+        "./%b getblockheader %0" ],
+      "blocktime":120,
+      "insight": {
+        "baseurl":"https://blockchain.nixplatform.io/api/%0",
+        "status":"status",
+        "format":"json",
+        "key":"backend.blocks"
+      }
      }
     ]
  }

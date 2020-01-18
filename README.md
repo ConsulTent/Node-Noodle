@@ -22,7 +22,7 @@ Node Noodle allows you to monitor your wallet/masternode for block drift and net
 
 ```
 ./noodle -c
-Node Noodle (c) 2019 ConsulTent Ltd. v1.0.0-0ab93ae
+Node Noodle (c) 2019 ConsulTent Ltd. v1.0.0-198387b-dirty
 http://consultent.ltd
 Donations accepted [ZCoin]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p
 
@@ -30,5 +30,6 @@ INFO[0000] Supported: ZCoin
 INFO[0000] Supported: BitCloud                          
 INFO[0000] Supported: EliteCoin                         
 INFO[0000] Supported: Dash                              
-INFO[0000] Supported: PIVX
+INFO[0000] Supported: PIVX                              
+INFO[0000] Supported: NIX                            
 ```                     
