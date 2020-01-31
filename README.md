@@ -1,11 +1,6 @@
 # Node-Noodle
-```
-...............
-.........oooo..
-......oooo.....
-...oooo........
-...............
-```
+
+![Node Noodle](https://user-images.githubusercontent.com/691270/73527102-6ff94880-444d-11ea-92d1-c10b6bf87dd9.png)
 
 Node Noodle for your Crypto
 
