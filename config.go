@@ -8,16 +8,16 @@ package main
 var JsonCoinConfig string = `
 { "coins": [
         {
-         "name": "ZCoin",
-         "tag":"xzc",
-         "binary":"zcoin-cli",
+         "name": "Firo",
+         "tag":"firo",
+         "binary":"firo-cli",
          "cmdchain": [
            "./%b getblockcount",
            "./%b getblockhash %0",
            "./%b getblockheader %0" ],
          "blocktime":300,
          "insight": {
-           "baseurl":"https://explorer.zcoin.io/api/%0",
+           "baseurl":"https://explorer.firo.org/api/%0",
            "status":"status",
            "format":"json",
            "key":"info.blocks"
