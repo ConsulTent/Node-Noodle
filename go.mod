@@ -8,4 +8,4 @@ require (
 	github.com/tidwall/gjson v1.7.5
 )
 
-go 1.13
+go 1.16
