@@ -39,7 +39,7 @@ type cmdline struct {
 	Version   bool   `init:"V" help:"Version info."`
 }
 
-const pver = "1.0.0"
+const pver = "1.0.1"
 
 var gitver = "undefined"
 
@@ -440,13 +440,13 @@ func setLogger(c bool) {
 			log.Hooks.Add(hook)
 			log.SetFormatter(&logrus.JSONFormatter{})
 			log.Info(fmt.Sprintf("Node Noodle (c) 2019 ConsulTent Ltd. (http://consultent.ltd) v%s-%s", pver, gitver))
-			log.Info("Donations accepted [ZCoin]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p\n\n")
+			log.Info("Donations accepted [Firo]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p\n\n")
 		}
 	} else {
 		log.SetFormatter(&logrus.TextFormatter{})
 		log.SetOutput(os.Stdout)
 		fmt.Printf("Node Noodle (c) 2019 ConsulTent Ltd. v%s-%s\nhttp://consultent.ltd\n", pver, gitver)
-		fmt.Printf("Donations accepted [ZCoin]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p\n\n")
+		fmt.Printf("Donations accepted [Firo]: aGoK6MF87K2SgT7cnJFhSWt7u2cAS5m18p\n\n")
 	}
 
 	if DEBUG == true {

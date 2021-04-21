@@ -4,6 +4,7 @@
 *.a
 *.so
 *.pid
+go.sum
 noodle
 
 # Folders
