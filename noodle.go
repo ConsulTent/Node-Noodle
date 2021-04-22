@@ -39,7 +39,7 @@ type cmdline struct {
 	Version   bool   `init:"V" help:"Version info."`
 }
 
-const pver = "1.0.1"
+const pver = "1.0.3"
 
 var gitver = "undefined"
 
