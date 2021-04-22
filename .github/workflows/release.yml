@@ -8,7 +8,7 @@ jobs:
     name: release linux/amd64
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
@@ -20,7 +20,7 @@ jobs:
     name: release linux/arm
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
@@ -32,7 +32,7 @@ jobs:
     name: release linux/arm64
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
@@ -44,7 +44,7 @@ jobs:
       name: release dragonfly/amd64
       runs-on: ubuntu-latest
       steps:
-      - uses: actions/checkout@testing
+      - uses: actions/checkout@v2
       - name: compile and release
         uses: ConsulTent/go-release.action@testing
         env:
@@ -56,7 +56,7 @@ jobs:
     name: release darwin/amd64
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
@@ -68,7 +68,7 @@ jobs:
     name: release windows/386
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
@@ -80,7 +80,7 @@ jobs:
     name: release windows/amd64
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@testing
+    - uses: actions/checkout@v2
     - name: compile and release
       uses: ConsulTent/go-release.action@testing
       env:
