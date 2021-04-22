@@ -3,8 +3,10 @@ export GOPATH=$HOME/go
 if [ "${GITHUB_ACTIONS}" == "true" ]; then
 go test 1> debug.out
 else
-go test
+go test -v
 fi
+
+go get 1>> debug.out
 
 if [ $? == 0 ]; then
   if [ "${GOOS}" == "windows" ]; then
