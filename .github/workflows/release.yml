@@ -10,7 +10,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: amd64
@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: arm
@@ -34,7 +34,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: arm64
@@ -46,7 +46,7 @@ jobs:
       steps:
       - uses: actions/checkout@v2
       - name: compile and release
-        uses: ConsulTent/go-release.action@testing
+        uses: ConsulTent/go-release.action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOARCH: amd64
@@ -58,7 +58,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: amd64
@@ -70,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: "386"
@@ -82,7 +82,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: compile and release
-      uses: ConsulTent/go-release.action@testing
+      uses: ConsulTent/go-release.action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         GOARCH: amd64

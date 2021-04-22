@@ -6,6 +6,7 @@
 *.pid
 go.sum
 noodle
+debug.out
 
 # Folders
 _obj
