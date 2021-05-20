@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/ConsulTent/gomail"
-
+	ql "modernc.org/ql"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -39,7 +39,7 @@ type cmdline struct {
 	Version   bool   `init:"V" help:"Version info."`
 }
 
-const pver = "1.0.3"
+const pver = "1.1.0"
 
 var gitver = "undefined"
 
@@ -57,6 +57,8 @@ var alert_failures int
 var alert_time_offset int64
 
 var Coin GenericCoin
+
+var database ql.db
 
 func main() {
 	runtime.GOMAXPROCS(2)
@@ -139,9 +141,29 @@ func main() {
 		log.Info(fmt.Sprintf("Detected: %s\n", Coin.Name))
 	}
 
-	// Loop and background here
+	// Starting QL storage
 
-	for { // Loop
+	if debug[0] == true {
+		dir, err := ioutil.TempDir("", "ql-debug")
+		if err != nil {
+			log.Fatal(fmt.Sprintf("%s", err))
+		}
+		database, err = ql.OpenFile(filepath.Join(dir, fmt.Sprintf("%s.db", Coin.Name)))
+		if err != nil {
+			log.Fatal(fmt.Sprintf("%s", err))
+			panic(err)
+		}
+	} else {
+		database, err = ql.OpenMem()
+		if err != nil {
+			log.Fatal(fmt.Sprintf("%s", err))
+			panic(err)
+		}
+	}
+
+	// Main loop and background here
+
+	for { // Main Loop
 
 		InitCoin()
 		// Detect terrible failures here
@@ -174,7 +196,7 @@ func main() {
 		}
 
 		log.Debug("Entering Sqlite3")
-		SaveToSqlite(Coin.Tag, cmds.Debug)
+		SaveToQL(Coin.Tag, cmds.Debug)
 		lastdrift, avgdrift, maxdrift, lastblocktime = GetBlockDrifts(Coin.Tag, cmds.Debug)
 
 		if cmds.Verbose == true {
@@ -284,31 +306,28 @@ func RestartCoin(coin string, start string, stop string) bool {
 	return true
 }
 
-func SaveToSqlite(coin string, debug ...bool) bool {
-	var database *sql.DB
-
-	log.Debug("Entering Sqlite3:SaveToSqlite")
-
-	if debug[0] == true {
-		database, _ = sql.Open("sqlite3", fmt.Sprintf("file:%s.db?cache=shared", coin))
-	} else {
-		database, _ = sql.Open("sqlite3", fmt.Sprintf("file:%s?mode=memory&cache=shared", coin))
+// Converting to QL
+func SaveToQL(coin string, debug ...bool) bool {
+	
+	log.Debug("Entering QL:SaveToQL")
+	
+	rs, _, err := database.Run(NewRWCtx(), `
+	CREATE TABLE IF NOT EXISTS blocks (id INTEGER PRIMARY KEY, Coin TEXT, Blocks BIGINT, BlockTime BIGINT, CaptureTime BIGINT);
+	SELECT id, Coin, Blocks, BlockTime, CaptureTime FROM blocks ORDER BY CaptureTime DESC LIMIT 1;
+	`, 1)
+	if err != nil {
+		log.Fatal(fmt.Sprintf("%s", err))
+		panic(err)
 	}
-	database.SetMaxOpenConns(1)
-	database.SetConnMaxLifetime(0)
-	database.SetMaxIdleConns(4)
-	statement, _ := database.Prepare("CREATE TABLE IF NOT EXISTS blocks (id INTEGER PRIMARY KEY, Coin TEXT, Blocks BIGINT, BlockTime BIGINT, CaptureTime BIGINT)")
-	statement.Exec()
 
-	rows, _ := database.Query("SELECT id, Coin, Blocks, BlockTime, CaptureTime FROM blocks ORDER BY CaptureTime DESC LIMIT 1")
-	log.Debug("Sqlite3 Read Data")
+	log.Debug("QL Read Data")
 	var id int
 	var blocks int64
 	var blocktime int64
 	var capturetime int64
 
 	for rows.Next() {
-		log.Debug("Sqlite3 read row")
+		log.Debug("QL read row")
 		rows.Scan(&id, &coin, &blocks, &blocktime, &capturetime)
 		//		fmt.Println(strconv.Itoa(id) + ": " + coin + " " + strconv.FormatInt(blocks,10) + " " + strconv.FormatInt(blocktime,10) + " " + strconv.FormatInt(capturetime,10))
 	}
